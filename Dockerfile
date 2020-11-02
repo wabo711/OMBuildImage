@@ -35,6 +35,19 @@ RUN git clone -b ${GRPC_RELEASE_TAG} https://github.com/grpc/grpc /var/local/git
     make -j$(nproc) && make install && make clean && ldconfig && \
     rm -rf /var/local/git/grpc
 
+# googleTestのインストール
+RUN git clone https://github.com/google/googletest.git /var/local/git/gtest \
+    && cd /var/local/git/gtest \
+    && mkdir build \
+    && cd build \
+    && cmake .. \
+    && make \
+    && cp lib/lib*.a /usr/lib \
+    && cd /var/local/git/gtest \
+    && cp -r googletest/include/gtest /usr/include \
+    && cp -r googlemock/include/gmock /usr/include \
+    && rm -rf /var/local/git/gtest
+
 # パッケージのupgradeおよびキャッシュファイルの削除
 RUN apt-get upgrade -y && apt-get clean -y
 
